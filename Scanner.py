@@ -70,8 +70,9 @@ def tokenize_text(text):
             while i < length and (text[i].isalnum() or text[i] == '_'):
                 i += 1
             lex = text[start:i]
-            if lex.upper() in KEYWORDS:
-                add(lex.upper(), lex)
+            # Keywords are case-sensitive per specification: only exact uppercase matches
+            if lex in KEYWORDS:
+                add(lex, lex)
             else:
                 add('Identifier', lex)
             continue
