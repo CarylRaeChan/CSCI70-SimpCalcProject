@@ -1,0 +1,17 @@
+
+IF a > b:
+   PRINT("okay");
+ENDIF;
+
+// original parser module fails in the next line
+IF a > b AND c <= D AND E != F:
+   PRINT("okay");
+ENDIF;
+IF a > b OR c <= D OR E != F:
+   PRINT("okay");
+ENDIF;
+
+// revised parser module should fail here because it combines ANDs and ORs
+IF a > b AND c <= D OR E != F:
+   PRINT("not okay");
+ENDIF;

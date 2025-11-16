@@ -1,0 +1,14 @@
+a := 100;
+b := 200;
+IF a =100:
+  IF b = 200:
+    PRINT("a value is 100 and b value is 200");
+  ENDIF;
+ENDIF;
+
+x := 10;
+IF x < 20 OR x=1:
+  PRINT("value of x : " , x );
+ENDIF;
+
+

@@ -1,0 +1,11 @@
+// this program switches the value of two variables:
+a := 1;
+b := 2;
+a := a+b;
+b := a-b;
+a := a-b;
+
+IF a>b:
+   PRINT("done");
+ENDIF;
+PRINT("end of program");

@@ -1,0 +1,30 @@
+
+// I start to recite a poem
+
+A := SQRT(1);
+B := SQRT(4);
+
+
+IF B>A:
+   PRINT("If I could save time in a bottle");
+ELSE
+   PRINT("IMPOSSIBLE");
+ENDIF;
+   
+IF 2>1 AND 3>2:
+   PRINT("the first thing that I'd like to do");
+ELSE
+   PRINT("IMPOSSIBLE");
+ENDIF;
+
+IF 2>1 OR 1>2:
+   PRINT("is to save every day until eternity passes away");
+ELSE
+   PRINT("IMPOSSIBLE");
+ENDIF;
+
+IF 2!1:
+   PRINT("just to spend them with you ");
+ELSE
+   PRINT("IMPOSSIBLE");
+ENDIF;

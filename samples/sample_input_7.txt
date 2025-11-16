@@ -1,0 +1,19 @@
+// test complex if
+
+IF a > b:
+   PRINT("I love Python");//just a test
+ENDIF;
+
+IF a >= b AND c <= D AND E != F: //just another test
+   PRINT("I love COBOL");
+ENDIF;
+IF a != b OR c <= D OR E != F OR F = 9.8E+7+6.5e4+3e+21:
+   PRINT("PHP IS THE MOST BEAUTIFUL LANGUAGE IN THE WORLD");
+ENDIF;
+
+// mixture of and or
+IF a <= b AND c >= D OR e != F:
+   PRINT("not okay");
+ENDIF;
+
+PRINT("See you");

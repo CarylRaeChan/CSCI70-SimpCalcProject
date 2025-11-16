@@ -1,0 +1,11 @@
+Assignment Statement Recognized
+Assignment Statement Recognized
+Assignment Statement Recognized
+Assignment Statement Recognized
+Assignment Statement Recognized
+If Statement Begins
+Print Statement Recognized
+Print Statement Recognized
+If Statement Ends
+Print Statement Recognized
+sample_input_6.txt is a valid SimpCalc program

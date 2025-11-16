@@ -1,0 +1,82 @@
+Identifier       a_
+If               IF
+Else             ELSE
+Endif            ENDIF
+Sqrt             SQRT
+Print            PRINT
+And              AND
+Or               OR
+Not              NOT
+Number           123211231
+Number           98.3243246
+Lexical Error: Illegal character/character sequence 
+Error
+Number           71
+Lexical Error: Invalid number format 
+Error
+Lexical Error: Invalid number format 
+Error
+Number           111.222e333
+Lexical Error: Illegal character/character sequence 
+Error
+Number           444
+Number           9.8E+7
+Plus             +
+Number           6.5e4
+Plus             +
+Number           3e+21
+Lexical Error: Illegal character/character sequence 
+Error
+Number           1e1
+Lexical Error: Illegal character/character sequence 
+Error
+Lexical Error: Invalid number format 
+Error
+Lexical Error: Illegal character/character sequence 
+Error
+Number           1
+Identifier       e
+Plus             +
+Identifier       e
+String           "you are a test sentence"
+Semicolon        ;
+Identifier       if
+Identifier       else
+Identifier       endif
+Identifier       sqrt
+Identifier       print
+Identifier       and
+Identifier       or
+Identifier       not
+Number           5213
+Identifier       y
+Colon            :
+Semicolon        ;
+Equal            =
+Assign           :=
+Semicolon        ;
+Colon            :
+Identifier       _x_
+Number           5
+Plus             +
+Number           5
+Plus             +
+Number           5
+Identifier       you
+Identifier       are
+Identifier       another
+Identifier       test
+Identifier       sentence
+Lexical Error: Illegal character/character sequence 
+Error
+Number           1
+Raise            **
+Number           3
+Raise            **
+Number           1
+Number           3
+Minus            -
+Number           4
+Plus             +
+Number           1
+EndofFile

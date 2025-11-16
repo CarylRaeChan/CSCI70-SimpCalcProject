@@ -1,0 +1,50 @@
+Identifier       a
+Assign           :=
+Number           1
+Semicolon        ;
+Identifier       b
+Assign           :=
+Number           2
+Semicolon        ;
+Identifier       c
+Assign           :=
+Number           3
+Semicolon        ;
+Identifier       sum
+Assign           :=
+Identifier       a
+Plus             +
+Identifier       b
+Plus             +
+Identifier       c
+Semicolon        ;
+Identifier       mean
+Assign           :=
+Identifier       sum
+Divide           /
+Number           3
+Semicolon        ;
+If               IF
+Identifier       mean
+GreaterThan      >
+Number           0
+Colon            :
+Print            PRINT
+LeftParen        (
+String           "We have a positive mean value."
+RightParen       )
+Semicolon        ;
+Else             ELSE
+Print            PRINT
+LeftParen        (
+String           "the mean value is negative"
+RightParen       )
+Semicolon        ;
+Endif            ENDIF
+Semicolon        ;
+Print            PRINT
+LeftParen        (
+String           "end of program"
+RightParen       )
+Semicolon        ;
+EndofFile

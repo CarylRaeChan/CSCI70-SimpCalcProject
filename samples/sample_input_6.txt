@@ -1,0 +1,14 @@
+
+// this program calculates the mean value of three numbers:
+a := 1;
+b := 2;
+c := 3;
+sum := a+b+c;
+mean := sum/3;
+
+IF mean>0:
+   PRINT("We have a positive mean value.");
+ELSE
+   PRINT("the mean value is negative");
+ENDIF;
+PRINT("end of program");

@@ -1,0 +1,5 @@
+If Statement Begins
+Print Statement Recognized
+If Statement Ends
+If Statement Begins
+Parse Error: Colon expected.

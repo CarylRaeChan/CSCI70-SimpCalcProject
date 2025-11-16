@@ -1,0 +1,10 @@
+Assignment Statement Recognized
+Assignment Statement Recognized
+If Statement Begins
+If Statement Begins
+Print Statement Recognized
+If Statement Ends
+If Statement Ends
+Assignment Statement Recognized
+If Statement Begins
+Parse Error: Colon expected.
