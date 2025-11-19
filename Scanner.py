@@ -1,12 +1,10 @@
-# Abarico, Michelle -
+# Abarico, Michelle - 220017
 # Caryl Chan - 221503
-# Muli, Lamberlain - 
-
+# Muli, Lamberlain -
 
 import os
-import re
 
-# Token types
+# Single-character tokens
 TOKEN_SINGLE = {
     ';': 'Semicolon',
     ':': 'Colon',
@@ -22,139 +20,201 @@ TOKEN_SINGLE = {
     '>': 'GreaterThan'
 }
 
-KEYWORDS = {'PRINT', 'IF', 'ELSE', 'ENDIF', 'SQRT', 'AND', 'OR', 'NOT'}
+# Keywords
+KEYWORDS = {
+    'PRINT': 'Print',
+    'IF': 'If',
+    'ELSE': 'Else',
+    'ENDIF': 'Endif',
+    'SQRT': 'Sqrt',
+    'AND': 'And',
+    'OR': 'Or',
+    'NOT': 'Not'
+}
 
+class Scanner:
+    def __init__(self, text):
+        self.text = text
+        self.i = 0
+        self.length = len(text)
+        self.line = 1
 
-def tokenize_text(text):
-    tokens = []
-    i = 0
-    length = len(text)
+    def getlinenum(self):
+        return self.line
 
-    def add(ttype, lexeme):
-        tokens.append((ttype, lexeme))
+    def gettoken(self):
+        text = self.text
+        length = self.length
+        i = self.i
 
-    while i < length:
+        # Skip whitespace and count newlines
+        while i < length and text[i].isspace():
+            if text[i] == '\n':
+                self.line += 1
+            i += 1
+        if i >= length:
+            self.i = i
+            return ('EndofFile', '')
+
         c = text[i]
 
-        # Whitespace
-        if c.isspace():
-            i += 1
-            continue
-
-        # Comments start with // to end of line
+        # Comments //
         if c == '/' and i + 1 < length and text[i+1] == '/':
             i += 2
             while i < length and text[i] != '\n':
                 i += 1
-            continue
+            self.i = i
+            return self.gettoken()
 
-        # Strings: double-quoted, cannot span lines
+        # Strings
         if c == '"':
             i += 1
             start = i
             while i < length and text[i] != '"':
-                if text[i] == '\n': 
-                    return [('LexicalError', 'Unterminated string literal')]
+                if text[i] == '\n':
+                    self.i = i
+                    return ('LexicalError', 'Unterminated string')
                 i += 1
-            if i >= length: 
-                return [('LexicalError', 'Unterminated string literal')]
-            lex = text[start:i] # exclude quotes
-            add('String', lex) 
+            if i >= length:
+                self.i = i
+                return ('LexicalError', 'Unterminated string')
+            lex = text[start-1:i+1]
             i += 1
-            continue
+            self.i = i
+            return ('String', lex)
 
-        # Identifier or keyword: letter or underscore then letters/digits/underscores
-        if (c.isalpha() or c == '_'):
+        # Identifiers / Keywords
+        if c.isalpha() or c == '_':
             start = i
             i += 1
             while i < length and (text[i].isalnum() or text[i] == '_'):
                 i += 1
             lex = text[start:i]
-            # Keywords are case-sensitive per specification: only exact uppercase matches
+            self.i = i
             if lex in KEYWORDS:
-                add(lex, lex)
-            else:
-                add('Identifier', lex)
-            continue
+                return (KEYWORDS[lex], lex)
+            return ('Identifier', lex)
 
-        # Number: integer, float, exponent
-        if c.isdigit() or (c == '.' and i+1 < length and text[i+1].isdigit()):
+        # FSM for NUMBERS
+        if c.isdigit():
             start = i
-            # integer/decimal part
-            while i < length and text[i].isdigit():
-                i += 1
-            if i < length and text[i] == '.':
-                i += 1
-                while i < length and text[i].isdigit():
-                    i += 1
-            # exponent
-            if i < length and text[i] in 'eE':
-                i += 1
-                if i < length and text[i] in '+-':
-                    i += 1
-                if i >= length or not text[i].isdigit():
-                    return [('LexicalError', 'Malformed number exponent')]
-                while i < length and text[i].isdigit():
-                    i += 1
-            lex = text[start:i]
-            add('Number', lex)
-            continue
+            state = "INT"     # INT → FLOAT → EXP → EXPDIG
+            i += 1
 
-        # Two-character tokens: :=, <=, >=, !=, **
+            while True:
+                if state == "INT":
+                    if i < length and text[i].isdigit():
+                        i += 1
+                    elif i < length and text[i] == '.':
+                        # dot must be followed by digit
+                        if i + 1 < length and text[i+1].isdigit():
+                            i += 2
+                            state = "FLOAT"
+                        else:
+                            # dot without digits → ERROR, skip only dot
+                            self.i = i + 1
+                            return ('LexicalError', 'Invalid number format')
+                    elif i < length and text[i] in 'eE':
+                        state = "EXP"
+                        i += 1
+                    else:
+                        break  # number ends cleanly
+
+                elif state == "FLOAT":
+                    if i < length and text[i].isdigit():
+                        i += 1
+                    elif i < length and text[i] in 'eE':
+                        state = "EXP"
+                        i += 1
+                    else:
+                        break
+
+                elif state == "EXP":
+                    # optional sign
+                    if i < length and text[i] in '+-':
+                        # next must be digit
+                        if i + 1 < length and text[i+1].isdigit():
+                            i += 2
+                            state = "EXPDIG"
+                        else:
+                            self.i = i + 2
+                            return ('LexicalError', 'Invalid number format')
+                    elif i < length and text[i].isdigit():
+                        i += 1
+                        state = "EXPDIG"
+                    else:
+                        self.i = i + 1
+                        return ('LexicalError', 'Invalid number format')
+
+                elif state == "EXPDIG":
+                    if i < length and text[i].isdigit():
+                        i += 1
+                    else:
+                        break
+
+            end = i
+
+            # If a letter immediately follows → NUMBER then IDENTIFIER
+            if i < length and (text[i].isalpha() or text[i] == '_'):
+                lex = text[start:end]
+                self.i = end
+                return ('Number', lex)
+
+            # Valid FINAL number
+            lex = text[start:end]
+            self.i = end
+            return ('Number', lex)
+
+
+        # Two-character tokens
         two = text[i:i+2]
         if two == ':=':
-            add('Assign', ':=')
-            i += 2
-            continue
+            self.i = i + 2
+            return ('Assign', ':=')
         if two == '<=':
-            add('LTEqual', '<=')
-            i += 2
-            continue
+            self.i = i + 2
+            return ('LTEqual', '<=')
         if two == '>=':
-            add('GTEqual', '>=')
-            i += 2
-            continue
+            self.i = i + 2
+            return ('GTEqual', '>=')
         if two == '!=':
-            add('NotEqual', '!=')
-            i += 2
-            continue
+            self.i = i + 2
+            return ('NotEqual', '!=')
         if two == '**':
-            add('Raise', '**')
-            i += 2
-            continue
+            self.i = i + 2
+            return ('Raise', '**')
 
-        # Single character tokens
+        # Single-character tokens
         if c in TOKEN_SINGLE:
-            add(TOKEN_SINGLE[c], c)
-            i += 1
-            continue
+            self.i = i + 1
+            return (TOKEN_SINGLE[c], c)
 
         # Unknown character
-        return [('LexicalError', f'Lexical Error reading character "{c}"')]
-
-    add('EndofFile', '')
-    return tokens
+        self.i = i + 1
+        return ('LexicalError', 'Illegal character/character sequence')
 
 
+# File handling
 def tokenize_file(path):
     with open(path, 'r', encoding='utf-8') as f:
         text = f.read()
-    return tokenize_text(text)
+    return Scanner(text)
 
-
-def write_scan_output(tokens, outpath):
+def write_scan_output(scanner, outpath):
     with open(outpath, 'w', encoding='utf-8') as f:
-        for ttype, lex in tokens:
+        while True:
+            ttype, lex = scanner.gettoken()
             if ttype == 'EndofFile':
                 f.write('EndofFile\n')
+                break
             elif ttype == 'LexicalError':
-                f.write(lex + '\n')
+                f.write(f'Lexical Error: {lex}\n')
+                f.write('Error\n')
             else:
-                f.write(f"{ttype}\t{lex}\n")
+                f.write(f'{ttype}\t{lex}\n')
 
 
 def find_input_files(root='samples'):
-    """Return list of input files in `root` directory that contain 'input' and end with .txt."""
     files = []
     if not os.path.isdir(root):
         return files
@@ -163,21 +223,17 @@ def find_input_files(root='samples'):
             files.append(os.path.join(root, fname))
     return sorted(files)
 
-
 def main():
     inputs = find_input_files('samples')
     if not inputs:
         print('No input files found in samples/.')
         return
-
     for infile in inputs:
-        tokens = tokenize_file(infile)
-        # construct scan output filename: replace 'input' with 'output_scan'
+        scanner = tokenize_file(infile)
         dirname, fname = os.path.split(infile)
         outname = fname.replace('input', 'output_scan')
         outpath = os.path.join(dirname, outname)
-        write_scan_output(tokens, outpath)
-
+        write_scan_output(scanner, outpath)
 
 if __name__ == '__main__':
     main()
