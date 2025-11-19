@@ -111,8 +111,8 @@ class Scanner:
                             i += 2
                             state = "FLOAT"
                         else:
-                            # dot without digits → ERROR, skip only dot
-                            self.i = i + 1
+                            # dot without digits → ERROR
+                            self.i = i + 2
                             return ('LexicalError', 'Invalid number format')
                     elif i < length and text[i] in 'eE':
                         state = "EXP"
@@ -183,6 +183,10 @@ class Scanner:
         if two == '**':
             self.i = i + 2
             return ('Raise', '**')
+
+        if c == '!':
+            self.i = i + 2
+            return ('LexicalError', 'Illegal character/character sequence')
 
         # Single-character tokens
         if c in TOKEN_SINGLE:
