@@ -139,21 +139,23 @@ class Parser:
 
     # Value parsing
     def Val(self):
-        if self.curr.type == 'Identifier': self.match('Identifier')
-        elif self.curr.type == 'Number': self.match('Number')
-        elif self.curr.type == 'Sqrt':
-            self.match('Sqrt'); self.match('LeftParen'); self.Exp(); self.match('RightParen')
-        elif self.curr.type == 'LeftParen':
-            self.match('LeftParen'); self.Exp(); self.match('RightParen')
-        else: self.error("Identifier, Number, SQRT, or ( expected.")
-
+        if self.curr.type == 'Identifier': self.match('Identifier') # identifier
+        elif self.curr.type == 'Number': self.match('Number') # number
+        elif self.curr.type == 'Sqrt': # square root function
+            self.match('Sqrt'); self.match('LeftParen'); self.Exp(); self.match('RightParen') # end Sqrt
+        elif self.curr.type == 'LeftParen': # parentheses
+            self.match('LeftParen'); self.Exp(); self.match('RightParen') # end parentheses
+        else: self.error("Identifier, Number, SQRT, or ( expected.") # error message for invalid value
+    
+    # Condition parsing
     def Cnd(self):
-        self.Exp()
-        self.Rel()
-        self.Exp()
+        self.Exp() # left expression
+        self.Rel() # relational operator
+        self.Exp() # right expression
 
+    # Relational operator parsing
     def Rel(self):
         if self.curr.type in ['LessThan', 'Equal', 'GreaterThan', 'LTEqual', 'GTEqual', 'NotEqual']:
-            self.match(self.curr.type)
+            self.match(self.curr.type) # match relational operator
         else:
             self.error("Relational operator expected.")
